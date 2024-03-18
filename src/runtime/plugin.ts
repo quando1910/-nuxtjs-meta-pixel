@@ -1,4 +1,17 @@
-import { defineNuxtPlugin, useRoute, useRouter, useRuntimeConfig } from '#app';
+import { Minimatch } from 'minimatch'
+import { ModuleOptions } from '../types'
+import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#app'
+
+function getMatchingPixel (option: ModuleOptions, path: string) {
+  return option.pixels.find(pixel => {
+    const routeIndex = pixel.routes.findIndex(route => {
+      const minimatch = new Minimatch(route)
+      return minimatch.match(path)
+    })
+
+    return routeIndex !== -1
+  })
+}
 
 /**
  * @class Fb
@@ -184,11 +197,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   /* eslint-enable */
   if (router) {
     router.afterEach(({ path }) => {
+
+      const matchingPixel = getMatchingPixel(parsedOptions, path)
       /**
        * Change the current pixelId according to the route.
        */
-      const pixelOptions = parsedOptions;
-      if (pixelOptions.pixelId !== instance.options.pixelId) {
+      // const pixelOptions = parsedOptions;
+      if (matchingPixel.pixelId !== instance.options.pixelId) {
         instance.setPixelId(pixelOptions.pixelId)
       }
 
