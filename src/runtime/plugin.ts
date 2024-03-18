@@ -35,7 +35,7 @@ class Fb {
   constructor (options: any) {
     this.eventsQueue = []
     this.fqbLoaded = false
-    this.options = options
+    this.options = options ?? {}
     this.fbq = null
 
     this.isEnabled = !options.disabled
@@ -49,7 +49,7 @@ class Fb {
   }
 
   setPixelId (pixelId: any) {
-    this.options.pixelId = pixelId
+    this.options = { ...this.options, pixelId }
     this.init()
   }
 
@@ -202,6 +202,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
   }
+  
   /* eslint-enable */
   if (router) {
     router.afterEach(({ path }) => {
