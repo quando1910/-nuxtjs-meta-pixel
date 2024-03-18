@@ -1,6 +1,6 @@
 // Module options TypeScript interface definition
 export interface ModuleOptions {
-  pixelId?: string | null;
+  pixelId?: string;
   track?: string;
   autoPageView?: boolean;
   version?: string;

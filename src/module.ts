@@ -8,7 +8,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   // Default configuration options of the Nuxt module
   defaults: {
-    pixelId: null,
+    pixelId: undefined,
     track: 'PageView',
     autoPageView: false,
     version: '2.0',
