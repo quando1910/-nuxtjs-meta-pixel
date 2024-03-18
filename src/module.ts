@@ -22,7 +22,8 @@ export default defineNuxtModule<ModuleOptions>({
     (nuxt.options.runtimeConfig.public as any).facebook = options;
     options.dev = nuxt.options.dev;
 
-    if (!options.pixelId) throw new Error('The default `pixelId` option is required.')
+    // @TODO: enable when necessary
+    // if (!options.pixelId) throw new Error('The default `pixelId` option is required.')
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'))
