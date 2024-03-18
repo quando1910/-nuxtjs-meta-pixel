@@ -1,6 +1,6 @@
 {
   "name": "nuxt3-meta-pixel",
-  "version": "1.0.9",
+  "version": "2.0.0",
   "description": "meta (facebook) pixel plugin for nuxt 3",
   "repository": "https://github.com/quando1910/nuxt3-meta-pixel",
   "license": "MIT",
@@ -28,7 +28,8 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.4.2"
+    "@nuxt/kit": "^3.4.2",
+    "minimatch": "^9.0.3"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.1.1",

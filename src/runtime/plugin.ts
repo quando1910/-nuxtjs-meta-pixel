@@ -1,4 +1,25 @@
-import { defineNuxtPlugin, useRoute, useRouter, useRuntimeConfig } from '#app';
+import { Minimatch } from 'minimatch'
+import { ModuleOptions } from '../types'
+import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#app'
+
+function getMatchingPixel (option: ModuleOptions, path: string) {
+  if (!option.pixels) {
+    return option
+  }
+
+  const matched = option.pixels.find(pixel => {
+    const routes = pixel.routes ?? []
+
+    const routeIndex = routes.findIndex(route => {
+      const minimatch = new Minimatch(route)
+      return minimatch.match(path)
+    })
+
+    return routeIndex !== -1
+  })
+
+  return matched ?? option
+}
 
 /**
  * @class Fb
@@ -14,7 +35,7 @@ class Fb {
   constructor (options: any) {
     this.eventsQueue = []
     this.fqbLoaded = false
-    this.options = options
+    this.options = options ?? {}
     this.fbq = null
 
     this.isEnabled = !options.disabled
@@ -28,7 +49,7 @@ class Fb {
   }
 
   setPixelId (pixelId: any) {
-    this.options.pixelId = pixelId
+    this.options = { ...this.options, pixelId }
     this.init()
   }
 
@@ -130,7 +151,7 @@ function log (...messages: any) {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig();
-  const parsedOptions = runtimeConfig.public.facebook;
+  const parsedOptions = runtimeConfig.public.facebook as ModuleOptions;
   const router = useRouter();
 
   const isDev = parsedOptions.dev && !parsedOptions.debug;
@@ -181,15 +202,18 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
   }
+  
   /* eslint-enable */
   if (router) {
     router.afterEach(({ path }) => {
+
+      const matchingPixel = getMatchingPixel(parsedOptions, path)
+
       /**
        * Change the current pixelId according to the route.
        */
-      const pixelOptions = parsedOptions;
-      if (pixelOptions.pixelId !== instance.options.pixelId) {
-        instance.setPixelId(pixelOptions.pixelId)
+      if (matchingPixel.pixelId !== instance.options.pixelId) {
+        instance.setPixelId(matchingPixel.pixelId)
       }
 
       /**

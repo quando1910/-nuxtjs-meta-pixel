@@ -1,18 +1,5 @@
 import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
-
-// Module options TypeScript interface definition
-export interface ModuleOptions {
-  pixelId?: string | null;
-  track?: string;
-  autoPageView?: boolean;
-  version?: string;
-  pixels?: any[];
-  manualMode?: boolean;
-  disabled?: boolean;
-  debug?: boolean;
-  dev?: boolean;
-}
-
+import { ModuleOptions } from './types'
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -21,7 +8,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   // Default configuration options of the Nuxt module
   defaults: {
-    pixelId: null,
+    pixelId: undefined,
     track: 'PageView',
     autoPageView: false,
     version: '2.0',
@@ -35,27 +22,10 @@ export default defineNuxtModule<ModuleOptions>({
     (nuxt.options.runtimeConfig.public as any).facebook = options;
     options.dev = nuxt.options.dev;
 
+    // @TODO: enable when necessary
+    // if (!options.pixelId) throw new Error('The default `pixelId` option is required.')
+
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'))
   }
 })
-
-
-// module.exports = function facebookPixelModule (moduleOptions) {
-//   const options = Object.assign({}, DEFAULT_OPTIONS, this.options.facebook, moduleOptions)
-//   options.dev = this.options.dev
-
-//   if (options.pixels && options.pixels.length > 0) {
-//     options.pixels = options.pixels.map(option => Object.assign({}, DEFAULT_OPTIONS, option))
-//   }
-
-//   if (!options.pixelId) throw new Error('The default `pixelId` option is required.')
-
-//   this.addPlugin({
-//     src: path.resolve(__dirname, './templates/plugin.js'),
-//     ssr: false,
-//     options
-//   })
-// }
-
-// module.exports.meta = require('../package.json')
