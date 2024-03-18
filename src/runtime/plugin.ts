@@ -212,7 +212,7 @@ export default defineNuxtPlugin((nuxtApp) => {
        * Change the current pixelId according to the route.
        */
       if (matchingPixel.pixelId !== instance.options.pixelId) {
-        instance.setPixelId(pixelOptions.pixelId)
+        instance.setPixelId(matchingPixel.pixelId)
       }
 
       /**
