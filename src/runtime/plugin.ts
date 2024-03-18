@@ -3,14 +3,22 @@ import { ModuleOptions } from '../types'
 import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#app'
 
 function getMatchingPixel (option: ModuleOptions, path: string) {
-  return option.pixels.find(pixel => {
-    const routeIndex = pixel.routes.findIndex(route => {
+  if (!option.pixels) {
+    return option
+  }
+
+  const matched = option.pixels.find(pixel => {
+    const routes = pixel.routes ?? []
+
+    const routeIndex = routes.findIndex(route => {
       const minimatch = new Minimatch(route)
       return minimatch.match(path)
     })
 
     return routeIndex !== -1
   })
+
+  return matched ?? option
 }
 
 /**
@@ -143,7 +151,7 @@ function log (...messages: any) {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig();
-  const parsedOptions = runtimeConfig.public.facebook;
+  const parsedOptions = runtimeConfig.public.facebook as ModuleOptions;
   const router = useRouter();
 
   const isDev = parsedOptions.dev && !parsedOptions.debug;
@@ -199,6 +207,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     router.afterEach(({ path }) => {
 
       const matchingPixel = getMatchingPixel(parsedOptions, path)
+
       /**
        * Change the current pixelId according to the route.
        */

@@ -4,9 +4,14 @@ export interface ModuleOptions {
   track?: string;
   autoPageView?: boolean;
   version?: string;
-  pixels?: any[];
+  pixels?: Pixel[];
   manualMode?: boolean;
   disabled?: boolean;
   debug?: boolean;
   dev?: boolean;
+}
+
+export interface Pixel {
+  pixelId: string
+  routes: string[]
 }
